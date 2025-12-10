@@ -1,54 +1,40 @@
 import { useState } from "react";
 
+
 function AddCartItem() {
-  const [form, setForm] = useState({
-    CustomerId: "",
-    ProductId: "",
-    Quantity: ""
-  });
+  const [form, setForm] = useState({ name: "", price: "" });
+
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const addItem = () => {
-    fetch("http://localhost:5198/api/products", {
+
+  const addItem = async () => {
+    const res = await fetch("http://localhost:5198/api/products", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(<input type="text" name="name" className="form-control" />)
-    })
-      .then(res => res.json())
-      .then(data => alert("Hozzáadva! ID: " + data.id));
+      body: JSON.stringify({ name: form.name, price: Number(form.price) })
+    });
+
+
+    if (!res.ok) return alert("Hiba történt!");
+    const data = await res.json();
+    alert("Hozzáadva! ID: " + data.id);
   };
+
 
   return (
     <div>
-      <h2>Új tétel hozzáadása</h2>
+      <h2>Új termék hozzáadása</h2>
 
-      <input
-        name="CustomerId"
-        placeholder="Customer ID"
-        value={form.CustomerId}
-        onChange={handleChange}
-      />
 
-      <input
-        name="ProductId"
-        placeholder="Product ID"
-        value={form.ProductId}
-        onChange={handleChange}
-      />
+      <input name="name" placeholder="Név" value={form.name} onChange={handleChange} />
+      <input name="price" placeholder="Ár" value={form.price} onChange={handleChange} />
 
-      <input
-        name="Quantity"
-        placeholder="Quantity"
-        value={form.Quantity}
-        onChange={handleChange}
-      />
 
       <button onClick={addItem}>Hozzáadás</button>
     </div>
   );
 }
-
 export default AddCartItem;

@@ -1,64 +1,37 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
-function CartList() {
-  const [items, setItems] = useState([]);
-  const [customers, setCustomers] = useState([]);
+export default function CartList() {
   const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchData = async () => {
+    async function fetchData() {
       try {
-        const [cartRes, customerRes, productRes] = await Promise.all([
-          fetch("http://localhost:5198/api/cartitems"), 
-          fetch("http://localhost:5198/api/customers"),
-          fetch("http://localhost:5198/api/products")
-        ]);
+        const res = await fetch("http://localhost:5198/api/products");
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
 
-        const [cartData, customerData, productData] = await Promise.all([
-          cartRes.json(),
-          customerRes.json(),
-          productRes.json(),
-        ]);
+        console.log("BACKEND ADAT:", data);  // ✔ Itt a jó helye
 
-        setItems(cartData);
-        setCustomers(customerData);
-        setProducts(productData);
-        setLoading(false);
+        setProducts(data);
       } catch (err) {
         console.error("Hiba a lekéréskor:", err);
-        setLoading(false);
+        setError(err.message);
       }
-    };
+    }
 
     fetchData();
   }, []);
 
-  const getCustomerName = (id) => {
-    const customer = customers.find(c => c.Id === id);  
-    return customer ? customer.Name : "Ismeretlen";
-  };
-
-  const getProductName = (id) => {
-    const product = products.find(p => p.Id === id);   
-    return product ? product.Name : "Ismeretlen";
-  };
-
-  if (loading) return <p>Betöltés...</p>;
+  if (error) return <div>Hiba: {error}</div>;
 
   return (
-    <div>
-      <h2>Kosár tételek</h2>
-      <ul>
-        {items.length === 0 && <li>Nem található tétel</li>}
-        {items.map(item => (
-          <li key={item.Id}>
-            {getCustomerName(item.CustomerId)} – {getProductName(item.ProductId)} ({item.Quantity} db)
-          </li>
-        ))}
-      </ul>
-    </div>
+    <ul>
+      {products.length === 0 ? (
+        <li>Nincsenek tételek.</li>
+      ) : (
+        products.map((p) => <li key={p.id}>{p.name}</li>)
+      )}
+    </ul>
   );
 }
-
-export default CartList;

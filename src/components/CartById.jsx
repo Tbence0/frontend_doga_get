@@ -1,35 +1,37 @@
 import { useState } from "react";
 
+
 function CartById() {
-  const [id, setId] = useState("");
-  const [item, setItem] = useState(null);
+const [id, setId] = useState("");
+const [item, setItem] = useState(null);
 
-  const loadItem = () => {
-    fetch(`http://localhost:5198/api/products`)
-      .then(res => res.json())
-      .then(data => setItem(data));
-  };
 
-  return (
-    <div>
-      <h2>Adat lekérése ID alapján</h2>
+const loadItem = async () => {
+if (!id) return;
+const res = await fetch(`http://localhost:5198/api/products/${id}`);
+if (!res.ok) return alert("Nincs ilyen ID!");
+const data = await res.json();
+setItem(data);
+};
 
-      <input
-        type="number"
-        placeholder="ID"
-        value={id}
-        onChange={(e) => setId(e.target.value)}
-      />
 
-      <button onClick={loadItem}>Lekérés</button>
+return (
+<div>
+<h2>Adat lekérése ID alapján</h2>
 
-      {item && (
-        <p>
-          {item.Customer} – {item.Product} ({item.Quantity} db)
-        </p>
-      )}
-    </div>
-  );
+
+<input type="number" value={id} onChange={(e) => setId(e.target.value)} />
+
+
+<button onClick={loadItem}>Lekérés</button>
+
+
+{item && (
+<p>
+{item.name} – {item.price} Ft
+</p>
+)}
+</div>
+);
 }
-
 export default CartById;
