@@ -10,10 +10,9 @@ function CartList() {
     const fetchData = async () => {
       try {
         const [cartRes, customerRes, productRes] = await Promise.all([
-          fetch("https://localhost:7242/cartitems"), 
-          fetch("https://localhost:7242/customers"),
-          fetch("https://localhost:7242/products")
-
+          fetch("https://localhost:3000/cartitems"), 
+          fetch("https://localhost:3000/customers"),
+          fetch("https://localhost:5198/api/products")
         ]);
 
         const [cartData, customerData, productData] = await Promise.all([
