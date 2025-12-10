@@ -5,7 +5,7 @@ function CartById() {
   const [item, setItem] = useState(null);
 
   const loadItem = () => {
-    fetch(`http://localhost:3000/cart/${id}`)
+    fetch(`http://localhost:3000/cartitems/${id}`)
       .then(res => res.json())
       .then(data => setItem(data));
   };

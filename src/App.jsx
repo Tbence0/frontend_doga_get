@@ -7,7 +7,6 @@ import AddCartItem from "./components/AddCartItem.jsx";
 function App() {
   return (
     <div>
-      <h1>Cart API teszt</h1>
 
       <CartList />
       <hr />
