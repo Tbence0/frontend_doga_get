@@ -12,7 +12,7 @@ function AddCartItem() {
   };
 
   const addItem = () => {
-    fetch("http://localhost:3000/cart", {
+    fetch("http://localhost:5198/api/products", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(<input type="text" name="name" className="form-control" />)
